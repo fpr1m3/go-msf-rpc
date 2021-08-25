@@ -64,7 +64,7 @@ func (msf *Metasploit) PluginUnLoad(pluginName string) (pluginUnLoadRes, error) 
 
 func (msf *Metasploit) PluginLoaded() (pluginLoadedRes, error) {
 	ctx := &pluginLoadedReq{
-		Method: "plugin.unload",
+		Method: "plugin.loaded",
 		Token:  msf.token,
 	}
 	var res pluginLoadedRes

@@ -9,7 +9,7 @@ type consoleCreateReq struct {
 }
 
 type consoleCreateRes struct {
-	Id     uint32 `msgpack:"id"`
+	Id     string `msgpack:"id"`
 	Prompt string `msgpack:"prompt"`
 	Busy   bool   `msgpack:"busy"`
 }
@@ -31,11 +31,10 @@ type consoleListReq struct {
 	Token    string
 }
 
-type consoleListRes struct {
-	Console string `msgpack:",omitempty"`
-	Id      string `msgpack:"id"`
-	Prompt  string `msgpack:"prompt"`
-	Busy    bool   `msgpack:"busy"`
+type consoleListRes map[string][]struct {
+	Id     string `msgpack:"id"`
+	Prompt string `msgpack:"prompt"`
+	Busy   bool   `msgpack:"busy"`
 }
 
 type consoleWriteReq struct {
@@ -152,7 +151,7 @@ func (msf *Metasploit) ConsoleWrite(consoleId, command string) (consoleWriteRes,
 
 func (msf *Metasploit) ConsoleRead(consoleId string) (consoleReadRes, error) {
 	ctx := &consoleReadReq{
-		Method:    "console.write",
+		Method:    "console.read",
 		Token:     msf.token,
 		ConsoleId: consoleId,
 	}

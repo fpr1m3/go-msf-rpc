@@ -86,10 +86,9 @@ type coreThreadListReq struct {
 	Token    string
 }
 
-type coreThreadListRes struct {
-	ID       uint32 `msgpack:",omitempty"`
+type coreThreadListRes map[int]struct {
 	Status   string `msgpack:"status"`
-	Critical string `msgpack:"critical"`
+	Critical bool   `msgpack:"critical"`
 	Name     string `msgpack:"name"`
 	Started  string `msgpack:"started"`
 }

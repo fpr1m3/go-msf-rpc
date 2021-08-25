@@ -9,8 +9,8 @@ type sessionListReq struct {
 	Token    string
 }
 
-type SessionListRes struct {
-	ID          uint32 `msgpack:",omitempty"`
+type SessionListRes map[uint32]struct {
+	// ID          uint32 `msgpack:",omitempty"`
 	Type        string `msgpack:"type"`
 	TunnelLocal string `msgpack:"tunnel_local"`
 	TunnelPeer  string `msgpack:"tunnel_peer"`
@@ -62,21 +62,114 @@ type sessionRingLastRes struct {
 	Seq uint32 `msgpack:"seq"`
 }
 
-func (msf *Metasploit) SessionList() (map[uint32]SessionListRes, error) {
+type sessionMeterpreterWriteReq struct {
+	_msgpack  struct{} `msgpack:",asArray"`
+	Method    string
+	Token     string
+	SessionID uint32
+	Command   string
+}
+
+type sessionMeterpreterWriteRes struct {
+	Result string `msgpack:"result"`
+}
+
+type sessionMeterpreterReadReq struct {
+	_msgpack  struct{} `msgpack:",asArray"`
+	Method    string
+	Token     string
+	SessionID uint32
+}
+
+type sessionMeterpreterReadRes struct {
+	Data string `msgpack:"data"`
+}
+
+type sessionMeterpreterRunSingleReq struct {
+	_msgpack  struct{} `msgpack:",asArray"`
+	Method    string
+	Token     string
+	SessionID uint32
+	Command   string
+}
+
+type sessionMeterpreterRunSingleRes sessionMeterpreterWriteRes
+
+type sessionMeterpreterDetachReq struct {
+	_msgpack  struct{} `msgpack:",asArray"`
+	Method    string
+	Token     string
+	SessionID uint32
+}
+
+type sessionMeterpreterDetachRes sessionMeterpreterWriteRes
+
+type sessionMeterpreterTabsReq struct {
+	_msgpack  struct{} `msgpack:",asArray"`
+	Method    string
+	Token     string
+	SessionID uint32
+	InputLine string
+}
+
+type sessionMeterpreterTabsRes struct {
+	Tabs []string `msgpack:"tabs"`
+}
+
+type sessionCompatibleModulesReq struct {
+	_msgpack  struct{} `msgpack:",asArray"`
+	Method    string
+	Token     string
+	SessionID uint32
+}
+
+type sessionCompatibleModulesRes struct {
+	Modules []string `msgpack:"modules"`
+}
+
+type sessionShellUpgradeReq struct {
+	_msgpack   struct{} `msgpack:",asArray"`
+	Method     string
+	Token      string
+	SessionID  uint32
+	IpAddress  string
+	PortNumber uint32
+}
+
+type sessionShellUpgradeRes sessionMeterpreterWriteRes
+
+type sessionRingClearReq struct {
+	_msgpack  struct{} `msgpack:",asArray"`
+	Method    string
+	Token     string
+	SessionID uint32
+}
+
+type sessionRingClearRes sessionMeterpreterWriteRes
+
+type sessionRingPutReq struct {
+	_msgpack  struct{} `msgpack:",asArray"`
+	Method    string
+	Token     string
+	SessionID uint32
+	Command   string
+}
+
+type sessionRingPutRes struct {
+	WriteCount uint32 `msgpack:"write_count"`
+}
+
+func (msf *Metasploit) SessionList() (SessionListRes, error) {
 	req := &sessionListReq{
 		Method: "session.list",
 		Token:  msf.token,
 	}
 
-	res := make(map[uint32]SessionListRes)
+	var res SessionListRes
 	if err := msf.send(req, &res); err != nil {
 		return nil, err
 	}
 
-	for id, session := range res {
-		session.ID = id
-		res[id] = session
-	}
 	return res, nil
 
 }

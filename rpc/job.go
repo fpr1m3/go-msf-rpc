@@ -1,7 +1,5 @@
 package rpc
 
-import "time"
-
 // Jobs
 
 type jobListReq struct {
@@ -10,9 +8,7 @@ type jobListReq struct {
 	Token    string
 }
 
-type jobListRes struct {
-	Id string `msgpack:",omitempty"`
-}
+type jobListRes map[string]string
 
 type jobInfoReq struct {
 	_msgpack struct{} `msgpack:",asArray"`
@@ -22,21 +18,11 @@ type jobInfoReq struct {
 }
 
 type jobInfoRes struct {
-	Jid       uint32    `msgpack:"jid"`
-	Name      string    `msgpack:"name"`
-	StartTime time.Time `msgpack:"start_time"`
-	UriPath   string    `msgpack:"uripath"`
-	Datastore struct {
-		EnableContextEncoding bool   `msgpack:"EnableContextEncoding"`
-		DisablePayloadHandler bool   `msgpack:"DisblePayloadHandler"`
-		Ssl                   bool   `msgpack:"SSL"`
-		SslVersion            string `msgpack:"SSLVersion"`
-		SrvHost               string `msgpack:"SRVHOST"`
-		SrvPort               string `msgpack:"SRVPORT"`
-		Payload               string `msgpack:"PAYLOAD"`
-		Lhost                 string `msgpack:"LHOST"`
-		Lport                 string `msgpack:"LPORT"`
-	} `msgpack:"datastore"`
+	Jid       int                    `msgpack:"jid"`
+	Name      string                 `msgpack:"name"`
+	StartTime int                    `msgpack:"start_time"`
+	UriPath   interface{}            `msgpack:"uripath,omitempty"`
+	Datastore map[string]interface{} `msgpack:"datastore,omitempty"`
 }
 
 type jobStopReq struct {
@@ -54,7 +40,7 @@ type jobStopRes struct {
 
 func (msf *Metasploit) JobList() (jobListRes, error) {
 	ctx := &jobListReq{
-		Method: "console.tabs",
+		Method: "job.list",
 		Token:  msf.token,
 	}
 	var res jobListRes
@@ -66,7 +52,7 @@ func (msf *Metasploit) JobList() (jobListRes, error) {
 
 func (msf *Metasploit) JobInfo(jobId string) (jobInfoRes, error) {
 	ctx := &jobInfoReq{
-		Method: "console.tabs",
+		Method: "job.info",
 		Token:  msf.token,
 		JobId:  jobId,
 	}
@@ -79,7 +65,7 @@ func (msf *Metasploit) JobInfo(jobId string) (jobInfoRes, error) {
 
 func (msf *Metasploit) JobStop(jobId string) (jobStopRes, error) {
 	ctx := &jobStopReq{
-		Method: "console.tabs",
+		Method: "job.stop",
 		Token:  msf.token,
 		JobId:  jobId,
 	}
