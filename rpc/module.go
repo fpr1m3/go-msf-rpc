@@ -143,7 +143,7 @@ type moduleEncodeReq struct {
 }
 
 type moduleEncodeRes struct {
-	Encoded string `msgpack:"encoded"`
+	Encoded []byte `msgpack:"encoded"`
 }
 
 type moduleExecuteReq struct {
