@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"gopkg.in/vmihailenco/msgpack.v2"
+	"github.com/vmihailenco/msgpack/v5"
 )
 
 type Metasploit struct {
